@@ -8,14 +8,15 @@
 |---|----------|---------|------|---------------|-------|--------|
 | 1 | Telegram канал | СБОРКА (1990076906) | RU | sborka.work/ai-agent/ | 2000 | Ожидает ревью |
 | 2 | Telegram канал | @timofeyzinin | RU | sborka.work/ai-agent/ | 2000 | Ожидает ревью |
-| 3 | LinkedIn | Tim Zinin | EN | sborka.work/ai-agent/en/ | 3000 | Ожидает ревью |
-| 4 | LinkedIn | Christina Zhukova | EN | sborka.work/ai-agent/en/ | 3000 | Ожидает ревью |
-| 5 | Threads | @timzinin | EN | sborka.work/ai-agent/en/ | 500 | Ожидает ревью |
-| 6 | Facebook | Tim Zinin Page | EN | sborka.work/ai-agent/en/ | 63000 | Ожидает ревью |
+| 3 | LinkedIn | Тим Зинин | RU | sborka.work/ai-agent/ | 3000 | Ожидает ревью |
+| 4 | LinkedIn | Кристина Жукова | RU | sborka.work/ai-agent/ | 3000 | Ожидает ревью |
+| 5 | Threads | @timzinin | RU | sborka.work/ai-agent/ | 500 | Ожидает ревью |
+| 6 | Facebook | Тим Зинин | RU | sborka.work/ai-agent/ | 63000 | Ожидает ревью |
 | 7 | VK | Тим Зинин | RU | sborka.work/ai-agent/ | 16000 | Ожидает ревью |
 | 8 | Bluesky | timzinin.bsky.social | EN | sborka.work/ai-agent/en/ | 300 | Ожидает ревью |
 | 9 | Dev.to | @timmyzinin | EN | sborka.work/ai-agent/en/ | Без лимита | Ожидает ревью |
 | 10 | OK.ru | Тимофей Зинин | RU | sborka.work/ai-agent/ | — | Ожидает ревью |
+| 11 | Telegram канал | Публичная СБОРКА | RU | sborka.work/ai-agent/ | 2000 | Ожидает ревью |
 
 ---
 
@@ -58,82 +59,76 @@ English version: https://sborka.work/ai-agent/en/?utm_source=telegram&utm_medium
 
 ---
 
-## 3. LinkedIn — Tim Zinin (EN)
+## 3. LinkedIn — Тим Зинин (RU)
 
 ```
-I built a free prompt that creates a personalized job search plan in 2 minutes.
+Если вы когда-нибудь открывали LinkedIn в понедельник утром с мыслью "надо бы заняться поиском работы" - и закрывали его через 20 минут ни с чем - это знакомо.
 
-Here's the problem: most people search for jobs reactively. They scroll listings, send generic applications, and wonder why nobody responds.
+Я потратил несколько месяцев на то, чтобы разобраться, как AI реально помогает в карьере. Не в теории, а на практике. В итоге вместе с Кристиной Жуковой мы сделали бесплатный промпт для ChatGPT и Claude.
 
-The prompt I created works differently. You copy it, paste into ChatGPT or Claude, fill in your profile, and get back:
-→ 3-5 target roles scored by fit
-→ Specific platforms to search
-→ Copy-paste outreach templates
-→ 5 actions to do today
+Что он делает: берёт ваш профиль, анализирует рынок и за 2 минуты выдаёт персональный план поиска работы. Целевые роли, платформы, шаблоны для аутрич, 5 конкретных действий на сегодня.
 
-No coding needed. Works for any role: developer, product manager, designer, marketer, analyst.
+Не вдохновляющий список советов. Конкретный список действий под ваш профиль.
 
-For the more technical crowd, the same page includes an architecture for an AI agent that automates this entirely. Three modules (scraper → matcher → outreach), scanning job boards every 6 hours and sending best matches to Telegram.
+Промпт бесплатный, копируете и вставляете. На той же странице есть архитектура AI-агента для тех, кто хочет автоматизировать поиск полностью.
 
-Free prompt + architecture: https://sborka.work/ai-agent/en/?utm_source=linkedin&utm_medium=social&utm_campaign=tim&utm_content=feb20_ai_career_agent
+Это часть того, чем мы занимаемся в карьерном клубе СБОРКА - помогаем людям находить работу системно, без хаоса.
 
-Built this as part of СБОРКА, a career discipline club I run with Kristina Zhukova. We're hosting a free webinar on Monday Feb 24 at 6 PM MSK where we'll break down how AI is changing job search.
+Промпт здесь: https://sborka.work/ai-agent/?utm_source=linkedin&utm_medium=social&utm_campaign=tim&utm_content=feb20_ai_career_agent
 
-If this is useful, share it with someone who's looking. Every repost helps someone get unstuck.
+И ещё: 24 февраля в 18:00 МСК проводим бесплатный вебинар про AI-инструменты для карьеры. Разберём, что реально работает, а что просто хайп.
 
-Register for the webinar: https://t.me/Sborka_work_bot?start=webinar3_aiagent_li
+Зарегистрироваться: https://t.me/Sborka_work_bot?start=webinar3_aiagent_li
 ```
 
 ---
 
-## 4. LinkedIn — Christina Zhukova (EN)
+## 4. LinkedIn — Кристина Жукова (RU)
 
 ```
-Tim Zinin just built something I wish existed when I started recruiting.
+8 лет в рекрутинге научили меня одному: большинство кандидатов проигрывают не из-за нехватки навыков. Они проигрывают из-за позиционирования.
 
-It's a free prompt that creates a personalized job search strategy in 2 minutes. You paste it into ChatGPT or Claude, fill in your profile, and get: target roles with fit scores, where to search, outreach templates, and a concrete action plan.
+80% резюме, которые ко мне попадали, описывали человека как набор функций. Не как специалиста с конкретной ценностью для конкретного бизнеса. Нанимающий менеджер читает ваш профиль и не понимает, зачем вам звонить. Именно поэтому хорошие кандидаты получают отказы.
 
-As a recruiter, I can tell you: 80% of candidates fail not because of skills, but because of positioning. They don't know what role to target. They don't know what hiring managers actually care about. They send the same generic message to everyone.
+Тим Зинин сделал промпт, который это исправляет. Копируете в ChatGPT или Claude, заполняете свой профиль - и получаете: целевые роли, где реально стоит искать, шаблоны для первого контакта с рекрутерами и менеджерами, и 5 действий на сегодня.
 
-This prompt solves exactly that. It forces you to think through your profile and gives you a strategy, not just a list of job boards.
+Всё это под ваш конкретный профиль, не обобщённые советы.
 
-Free prompt: https://sborka.work/ai-agent/en/?utm_source=linkedin&utm_medium=social&utm_campaign=kristina&utm_content=feb20_ai_career_agent
+Я рекомендую это всем, кто сейчас в поиске, потому что проблема позиционирования - самая распространённая и самая незаметная для самого кандидата.
 
-We're running a free webinar on Feb 24 at 6 PM MSK where we'll go deeper into AI tools for job search and how to build a system that lands offers in 30-60 days.
+Промпт бесплатный: https://sborka.work/ai-agent/?utm_source=linkedin&utm_medium=social&utm_campaign=kristina&utm_content=feb20_ai_career_agent
 
-Register: https://t.me/Sborka_work_bot?start=webinar3_aiagent_li_kr
-```
+24 февраля в 18:00 МСК вместе с Тимом проводим вебинар про AI-инструменты для карьеры. Если вы в активном поиске - приходите, будет практично.
 
----
-
-## 5. Threads — @timzinin (EN)
-
-```
-Built a free prompt that creates a job search plan in 2 min.
-
-Copy → paste into ChatGPT/Claude → fill profile → get target roles, platforms, outreach templates.
-
-Works for any role. No code needed.
-
-https://sborka.work/ai-agent/en/?utm_source=threads&utm_medium=social&utm_campaign=tim&utm_content=feb20_ai_career_agent
+Зарегистрироваться: https://t.me/Sborka_work_bot?start=webinar3_aiagent_li_kr
 ```
 
 ---
 
-## 6. Facebook Page — Tim Zinin (EN)
+## 5. Threads — @timzinin (RU)
 
 ```
-Built a free prompt that creates a personalized job search plan in 2 minutes.
+Скопировал промпт в ChatGPT, вставил свой профиль - получил план поиска работы за 2 минуты. Целевые роли, платформы, шаблоны. Бесплатно.
 
-You copy it, paste into ChatGPT or Claude, fill in your profile. You get back: 3-5 target roles scored by fit, specific platforms to search, outreach templates, and 5 actions to do today.
+sborka.work/ai-agent/?utm_source=threads&utm_medium=social&utm_campaign=tim&utm_content=feb20_ai_career_agent
+```
 
-Works for any role. No coding needed. No sign-up required.
+---
 
-The same page also has an architecture for an AI agent that automates the entire process: scanning job boards every 6 hours, scoring matches, sending best ones to Telegram.
+## 6. Facebook — Тим Зинин (RU)
 
-Free prompt + architecture: https://sborka.work/ai-agent/en/?utm_source=facebook&utm_medium=social&utm_campaign=tim&utm_content=feb20_ai_career_agent
+```
+Поиск работы зависает не потому, что вы плохой специалист. Чаще всего - потому что непонятно, с чего начать конкретно сегодня.
 
-Free webinar on Feb 24 (6 PM MSK) where we break down AI tools for job search in detail. Register: https://t.me/Sborka_work_bot?start=webinar3_aiagent_fb
+Мы сделали бесплатный промпт для ChatGPT и Claude. Вставляете свой профиль - получаете персональный план: целевые роли, платформы для поиска, шаблоны для аутрич, и 5 действий на сегодня.
+
+Не общие советы, а конкретный список под ваш профиль. Занимает 2 минуты.
+
+Промпт здесь: https://sborka.work/ai-agent/?utm_source=facebook&utm_medium=social&utm_campaign=tim&utm_content=feb20_ai_career_agent
+
+24 февраля в 18:00 МСК - бесплатный вебинар про AI-инструменты для карьеры. Разберём, что реально ускоряет поиск.
+
+Зарегистрироваться: https://t.me/Sborka_work_bot?start=webinar3_aiagent_fb
 ```
 
 ---
@@ -240,6 +235,28 @@ Built as part of [СБОРКА](https://sborka.work), a career discipline club. 
 Промпт: https://sborka.work/ai-agent/?utm_source=okru&utm_medium=social&utm_campaign=tim&utm_content=feb20_ai_career_agent
 
 24 февраля в 18:00 проводим бесплатный вебинар про AI-инструменты для карьеры. Записаться: https://t.me/Sborka_work_bot?start=webinar3_aiagent_ok
+```
+
+---
+
+## 11. Telegram канал "Публичная СБОРКА" (RU)
+
+```
+Привет, это публичный канал СБОРКИ.
+
+СБОРКА - это карьерный клуб, где люди находят работу за 30-60 дней. Не через курсы и лекции, а через систему и поддержку: еженедельные встречи, партнёры по подотчётности, конкретные инструменты. Здесь будем делиться практическими материалами, подкастами и всем, что реально помогает в карьере.
+
+Начнём с инструмента, который только что запустили.
+
+Если поиск работы буксует - попробуйте AI Career Agent. Это бесплатный промпт для ChatGPT или Claude. Копируете, заполняете свой профиль, и за 2 минуты получаете персональный план: целевые роли, где искать, шаблоны для первого контакта с работодателями, 5 действий на сегодня.
+
+На той же странице есть архитектура полноценного AI-агента для поиска работы - для тех, кто хочет автоматизировать процесс.
+
+Промпт бесплатный: https://sborka.work/ai-agent/?utm_source=telegram&utm_medium=social&utm_campaign=tim&utm_content=feb20_ai_career_agent_pub
+
+И ещё: 24 февраля в 18:00 МСК проводим открытый вебинар про AI-инструменты для карьеры. Будет практично и без воды.
+
+Зарегистрироваться: https://t.me/Sborka_work_bot?start=webinar3_aiagent_tg_pub
 ```
 
 ---
