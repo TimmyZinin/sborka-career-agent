@@ -30,7 +30,7 @@
 
 На этой же странице есть архитектура AI-агента, который может делать это автоматически: сканировать вакансии, оценивать fit, присылать лучшие в Telegram. Для тех, кто хочет копнуть глубже.
 
-Промпт и архитектура: https://sborka.work/ai-agent/
+Промпт и архитектура: https://sborka.work/ai-agent/?utm_source=telegram&utm_medium=social&utm_campaign=tim&utm_content=feb20_ai_career_agent
 
 В понедельник 24 февраля в 18:00 МСК разберём всё это на открытом вебинаре. Как AI меняет поиск работы, какие инструменты работают, что автоматизировать. Приходите, будет полезно.
 
@@ -48,8 +48,8 @@
 
 Там же на странице есть архитектура агента для тех, кому интересно автоматизировать поиск полностью: scraper, matcher, outreach. Три модуля, Python, Docker, можно собрать за 10 дней.
 
-Промпт: https://sborka.work/ai-agent/
-English version: https://sborka.work/ai-agent/en/
+Промпт: https://sborka.work/ai-agent/?utm_source=telegram&utm_medium=social&utm_campaign=tim&utm_content=feb20_ai_career_agent
+English version: https://sborka.work/ai-agent/en/?utm_source=telegram&utm_medium=social&utm_campaign=tim&utm_content=feb20_ai_career_agent_en
 
 Если тебе или кому-то из знакомых это полезно, перешли. А в понедельник 24 февраля разберём AI-инструменты для карьеры на открытом вебинаре СБОРКИ.
 
@@ -75,7 +75,7 @@ No coding needed. Works for any role: developer, product manager, designer, mark
 
 For the more technical crowd, the same page includes an architecture for an AI agent that automates this entirely. Three modules (scraper → matcher → outreach), scanning job boards every 6 hours and sending best matches to Telegram.
 
-Free prompt + architecture: https://sborka.work/ai-agent/en/
+Free prompt + architecture: https://sborka.work/ai-agent/en/?utm_source=linkedin&utm_medium=social&utm_campaign=tim&utm_content=feb20_ai_career_agent
 
 Built this as part of СБОРКА, a career discipline club I run with Kristina Zhukova. We're hosting a free webinar on Monday Feb 24 at 6 PM MSK where we'll break down how AI is changing job search.
 
@@ -97,7 +97,7 @@ As a recruiter, I can tell you: 80% of candidates fail not because of skills, bu
 
 This prompt solves exactly that. It forces you to think through your profile and gives you a strategy, not just a list of job boards.
 
-Free prompt: https://sborka.work/ai-agent/en/
+Free prompt: https://sborka.work/ai-agent/en/?utm_source=linkedin&utm_medium=social&utm_campaign=kristina&utm_content=feb20_ai_career_agent
 
 We're running a free webinar on Feb 24 at 6 PM MSK where we'll go deeper into AI tools for job search and how to build a system that lands offers in 30-60 days.
 
@@ -115,7 +115,7 @@ Copy → paste into ChatGPT/Claude → fill profile → get target roles, platfo
 
 Works for any role. No code needed.
 
-https://sborka.work/ai-agent/en/
+https://sborka.work/ai-agent/en/?utm_source=threads&utm_medium=social&utm_campaign=tim&utm_content=feb20_ai_career_agent
 ```
 
 ---
@@ -131,7 +131,7 @@ Works for any role. No coding needed. No sign-up required.
 
 The same page also has an architecture for an AI agent that automates the entire process: scanning job boards every 6 hours, scoring matches, sending best ones to Telegram.
 
-Free prompt + architecture: https://sborka.work/ai-agent/en/
+Free prompt + architecture: https://sborka.work/ai-agent/en/?utm_source=facebook&utm_medium=social&utm_campaign=tim&utm_content=feb20_ai_career_agent
 
 Free webinar on Feb 24 (6 PM MSK) where we break down AI tools for job search in detail. Register: https://t.me/Sborka_work_bot?start=webinar3_aiagent_fb
 ```
@@ -147,7 +147,7 @@ Free webinar on Feb 24 (6 PM MSK) where we break down AI tools for job search in
 
 Работает для любой роли: разработчик, продакт, дизайнер, маркетолог, аналитик. Кодить не нужно.
 
-Промпт: https://sborka.work/ai-agent/
+Промпт: https://sborka.work/ai-agent/?utm_source=vk&utm_medium=social&utm_campaign=tim&utm_content=feb20_ai_career_agent
 
 24 февраля в 18:00 МСК проводим открытый вебинар, где разберём AI-инструменты для карьеры подробнее. Бесплатно.
 
@@ -165,7 +165,7 @@ Copy → ChatGPT/Claude → fill profile → get roles, platforms, outreach temp
 
 No code. Any role.
 
-sborka.work/ai-agent/en/
+sborka.work/ai-agent/en/?utm_source=bluesky&utm_medium=social&utm_campaign=tim&utm_content=feb20_ai_career_agent
 ```
 
 ---
@@ -217,7 +217,7 @@ Only opportunities scoring 7+ reach your Telegram.
 
 ## Try It
 
-Free prompt + full architecture: [sborka.work/ai-agent/en/](https://sborka.work/ai-agent/en/)
+Free prompt + full architecture: [sborka.work/ai-agent/en/](https://sborka.work/ai-agent/en/?utm_source=devto&utm_medium=social&utm_campaign=tim&utm_content=feb20_ai_career_agent)
 
 No sign-up. No paywall. Just copy and use.
 
@@ -237,7 +237,7 @@ Built as part of [СБОРКА](https://sborka.work), a career discipline club. 
 
 Работает для любой специальности: разработчик, менеджер, дизайнер, маркетолог.
 
-Промпт: https://sborka.work/ai-agent/
+Промпт: https://sborka.work/ai-agent/?utm_source=okru&utm_medium=social&utm_campaign=tim&utm_content=feb20_ai_career_agent
 
 24 февраля в 18:00 проводим бесплатный вебинар про AI-инструменты для карьеры. Записаться: https://t.me/Sborka_work_bot?start=webinar3_aiagent_ok
 ```
