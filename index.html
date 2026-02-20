@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Career Scout Agent — AI-агент для поиска работы | СБОРКА</title>
+    <meta name="description" content="Готовый промпт + архитектура AI-агента, который находит работу за тебя. Для участников карьерного клуба СБОРКА.">
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --surface: #12121a;
+            --surface2: #1a1a2e;
+            --accent: #6c5ce7;
+            --accent2: #a29bfe;
+            --green: #00e676;
+            --orange: #ffa726;
+            --red: #ef5350;
+            --text: #e8e8f0;
+            --text2: #9090a8;
+            --border: #2a2a3e;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'SF Mono', 'Fira Code', 'JetBrains Mono', monospace;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+        .grain {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; opacity: 0.03; z-index: 9999;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
+        .glow-orb {
+            position: fixed; width: 600px; height: 600px; border-radius: 50%;
+            filter: blur(120px); opacity: 0.12; pointer-events: none; z-index: 0;
+        }
+        .glow-orb.purple { background: var(--accent); top: -200px; right: -200px; }
+        .glow-orb.blue { background: #0984e3; bottom: -200px; left: -200px; }
+        .container { max-width: 900px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+        /* NAV */
+        nav {
+            position: fixed; top: 0; width: 100%;
+            background: rgba(10,10,15,0.85); backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border); z-index: 100; padding: 12px 0;
+        }
+        nav .container { display: flex; justify-content: space-between; align-items: center; }
+        nav .logo { font-weight: 800; font-size: 16px; letter-spacing: -0.5px; }
+        nav .logo span { color: var(--accent2); }
+        nav .nav-links { display: flex; gap: 24px; }
+        nav .nav-links a { color: var(--text2); text-decoration: none; font-size: 13px; transition: color 0.2s; }
+        nav .nav-links a:hover { color: var(--text); }
+        @media (max-width: 640px) { nav .nav-links { display: none; } }
+
+        /* HERO */
+        .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 80px 0; }
+        .badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 6px 16px; background: rgba(108,92,231,0.15);
+            border: 1px solid rgba(108,92,231,0.3); border-radius: 100px;
+            font-size: 13px; color: var(--accent2); margin-bottom: 32px; width: fit-content;
+        }
+        .badge .dot { width: 8px; height: 8px; background: var(--green); border-radius: 50%; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+        h1 { font-size: clamp(36px,6vw,64px); font-weight: 800; line-height: 1.1; letter-spacing: -2px; margin-bottom: 24px; }
+        h1 .hl { background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .subtitle { font-size: 18px; color: var(--text2); max-width: 640px; margin-bottom: 40px; }
+        .cta-row { display: flex; gap: 16px; flex-wrap: wrap; }
+        .btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 14px 28px; border-radius: 12px; font-size: 15px;
+            font-family: inherit; text-decoration: none; font-weight: 600;
+            transition: all 0.2s; cursor: pointer; border: none;
+        }
+        .btn-primary { background: var(--accent); color: white; }
+        .btn-primary:hover { background: #5a4bd6; transform: translateY(-2px); }
+        .btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+        .btn-secondary:hover { border-color: var(--accent); transform: translateY(-2px); }
+        .stats-row { display: flex; gap: 32px; margin: 40px 0; flex-wrap: wrap; }
+        .stat { display: flex; flex-direction: column; }
+        .stat .num { font-size: 32px; font-weight: 800; color: var(--accent2); }
+        .stat .label { font-size: 13px; color: var(--text2); }
+
+        /* SECTIONS */
+        section { padding: 80px 0; border-top: 1px solid var(--border); }
+        .section-label { font-size: 12px; text-transform: uppercase; letter-spacing: 3px; color: var(--accent2); margin-bottom: 16px; }
+        h2 { font-size: clamp(28px,4vw,40px); font-weight: 700; letter-spacing: -1px; margin-bottom: 40px; }
+        h3 { font-size: 20px; margin-bottom: 16px; }
+
+        /* CARDS */
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+        .card {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: 16px; padding: 28px; transition: all 0.3s;
+        }
+        .card:hover { border-color: var(--accent); transform: translateY(-4px); box-shadow: 0 8px 32px rgba(108,92,231,0.15); }
+        .card h4 { font-size: 18px; margin-bottom: 8px; }
+        .card p { font-size: 14px; color: var(--text2); }
+        .card .tag { display: inline-block; margin-top: 12px; padding: 4px 10px; background: rgba(108,92,231,0.15); border-radius: 6px; font-size: 12px; color: var(--accent2); }
+
+        /* PROMPT BLOCK */
+        .prompt-block {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: 16px; padding: 32px; position: relative; margin: 24px 0;
+        }
+        .prompt-block pre {
+            font-size: 13px; white-space: pre-wrap; word-break: break-word;
+            color: var(--text2); line-height: 1.8; max-height: 600px; overflow-y: auto;
+        }
+        .prompt-block .var { color: var(--accent2); background: rgba(108,92,231,0.1); padding: 2px 6px; border-radius: 4px; }
+        .copy-btn {
+            position: absolute; top: 16px; right: 16px;
+            background: var(--accent); color: white; border: none;
+            padding: 8px 16px; border-radius: 8px; font-family: inherit;
+            font-size: 13px; cursor: pointer; transition: all 0.2s;
+        }
+        .copy-btn:hover { background: #5a4bd6; }
+        .copy-btn.copied { background: var(--green); color: var(--bg); }
+
+        /* PIPELINE */
+        .pipeline { display: flex; gap: 0; overflow-x: auto; padding-bottom: 16px; }
+        .pipeline-step {
+            flex: 1; min-width: 200px; padding: 24px;
+            background: var(--surface); border: 1px solid var(--border); position: relative;
+        }
+        .pipeline-step:first-child { border-radius: 16px 0 0 16px; }
+        .pipeline-step:last-child { border-radius: 0 16px 16px 0; }
+        .pipeline-step:not(:last-child)::after {
+            content: "→"; position: absolute; right: -8px; top: 50%;
+            transform: translateY(-50%); font-size: 20px; color: var(--accent);
+            z-index: 2; background: var(--bg); padding: 4px;
+        }
+        .pipeline-step .step-num { font-size: 12px; color: var(--accent); margin-bottom: 8px; }
+        .pipeline-step h4 { font-size: 16px; margin-bottom: 8px; }
+        .pipeline-step p { font-size: 13px; color: var(--text2); }
+
+        /* SPRINT */
+        .sprint-timeline { display: flex; flex-direction: column; }
+        .sprint-item { display: flex; gap: 24px; padding: 24px 0; border-bottom: 1px solid var(--border); }
+        .sprint-item:last-child { border-bottom: none; }
+        .sprint-num { font-size: 14px; font-weight: 700; color: var(--accent); min-width: 80px; padding-top: 2px; }
+        .sprint-content h4 { font-size: 16px; margin-bottom: 4px; }
+        .sprint-content .dur { font-size: 13px; color: var(--orange); margin-bottom: 8px; }
+        .sprint-content ul { list-style: none; padding: 0; }
+        .sprint-content li { font-size: 14px; color: var(--text2); padding: 2px 0; }
+        .sprint-content li::before { content: "▸ "; color: var(--accent); }
+
+        /* TOOLS TABLE */
+        .tools-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+        .tool-card {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: 12px; padding: 20px;
+        }
+        .tool-card h4 { font-size: 15px; margin-bottom: 4px; }
+        .tool-card p { font-size: 13px; color: var(--text2); }
+        .tool-card .free { color: var(--green); font-size: 12px; margin-top: 8px; }
+
+        /* QUICK START */
+        .qs-steps { counter-reset: qs; display: flex; flex-direction: column; gap: 16px; }
+        .qs-step {
+            counter-increment: qs; display: flex; gap: 16px; align-items: flex-start;
+            padding: 20px 24px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+        }
+        .qs-step::before { content: counter(qs); font-size: 24px; font-weight: 800; color: var(--accent); min-width: 32px; }
+        .qs-step p { font-size: 15px; }
+        .qs-step .sub { font-size: 13px; color: var(--text2); margin-top: 4px; }
+
+        /* SOURCES */
+        .source-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+        .source-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px; }
+        .source-card h4 { font-size: 16px; margin-bottom: 12px; }
+        .source-card ul { list-style: none; padding: 0; }
+        .source-card li { font-size: 14px; color: var(--text2); padding: 4px 0; }
+        .source-card li a { color: var(--accent2); text-decoration: none; }
+        .source-card li a:hover { text-decoration: underline; }
+
+        /* FAQ */
+        .faq-item { padding: 20px 0; border-bottom: 1px solid var(--border); }
+        .faq-item:last-child { border-bottom: none; }
+        .faq-q { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: var(--text); }
+        .faq-a { font-size: 14px; color: var(--text2); }
+
+        /* SCORING */
+        .score-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin: 24px 0; }
+        .score-item {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: 12px; padding: 16px; text-align: center;
+        }
+        .score-item .letter { font-size: 28px; font-weight: 800; color: var(--accent2); }
+        .score-item .name { font-size: 13px; margin-top: 4px; }
+        .score-item .desc { font-size: 11px; color: var(--text2); margin-top: 4px; }
+
+        footer {
+            padding: 40px 0; border-top: 1px solid var(--border);
+            text-align: center; color: var(--text2); font-size: 13px;
+        }
+        footer a { color: var(--accent2); text-decoration: none; }
+        footer a:hover { text-decoration: underline; }
+
+        @media (max-width: 640px) {
+            .pipeline { flex-direction: column; }
+            .pipeline-step { border-radius: 0 !important; }
+            .pipeline-step:first-child { border-radius: 16px 16px 0 0 !important; }
+            .pipeline-step:last-child { border-radius: 0 0 16px 16px !important; }
+            .pipeline-step:not(:last-child)::after { display: none; }
+            .sprint-item { flex-direction: column; gap: 8px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="grain"></div>
+    <div class="glow-orb purple"></div>
+    <div class="glow-orb blue"></div>
+
+    <nav>
+        <div class="container">
+            <div class="logo"><span>СБОРКА</span> / career.scout</div>
+            <div class="nav-links">
+                <a href="#prompt">Промпт</a>
+                <a href="#architecture">Архитектура</a>
+                <a href="#tools">Инструменты</a>
+                <a href="#start">Старт</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+
+        <!-- HERO -->
+        <section class="hero" style="border-top:none;">
+            <div class="badge"><span class="dot"></span> СБОРКА / Career Agent</div>
+            <h1>AI-агент, который<br><span class="hl">ищет работу</span><br>пока ты спишь</h1>
+            <p class="subtitle">
+                Готовый промпт + архитектура агента для поиска работы.
+                Скопируй промпт в ChatGPT или Claude — и получи персональный план поиска за 2 минуты.
+                Или собери агента, который будет делать это автоматически.
+            </p>
+            <div class="cta-row">
+                <a href="#prompt" class="btn btn-primary">Скопировать промпт →</a>
+                <a href="#architecture" class="btn btn-secondary">Как работает агент</a>
+            </div>
+            <div class="stats-row">
+                <div class="stat"><span class="num">2 мин</span><span class="label">Карьерный план через промпт</span></div>
+                <div class="stat"><span class="num">~10 дней</span><span class="label">Собрать агента с нуля</span></div>
+                <div class="stat"><span class="num">0 ₽</span><span class="label">Бесплатные LLM-tier'ы</span></div>
+            </div>
+        </section>
+
+        <!-- HOW IT WORKS -->
+        <section>
+            <div class="section-label">01 / Два пути</div>
+            <h2>Как это работает</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <h4>Путь 1: Промпт</h4>
+                    <p>Копируешь промпт ниже, заполняешь свой профиль, вставляешь в ChatGPT/Claude. Получаешь: целевые роли, площадки, шаблоны аутрича, план на сегодня.</p>
+                    <span class="tag">без кода, 2 минуты</span>
+                </div>
+                <div class="card">
+                    <h4>Путь 2: Агент</h4>
+                    <p>Строишь AI-агента по архитектуре ниже. Он сканирует вакансии каждые 6 часов, оценивает fit по твоему профилю, шлёт лучшие варианты в Telegram.</p>
+                    <span class="tag">Python + Docker, ~10 дней</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROMPT -->
+        <section id="prompt">
+            <div class="section-label">02 / Копируй и вставляй</div>
+            <h2>Промпт для карьерного анализа</h2>
+            <p style="color:var(--text2);margin-bottom:24px;">Работает в ChatGPT, Claude, Gemini — любой LLM. Заполни блоки <code style="color:var(--accent2);">[ЗАПОЛНИ]</code> и отправь.</p>
+
+            <div class="prompt-block" id="main-prompt">
+                <button class="copy-btn" onclick="copyPrompt(this, 'prompt-text')">Копировать</button>
+                <pre id="prompt-text">Ты — карьерный консультант с 20-летним опытом на IT-рынке России и международном рынке.
+Одновременно ты рекрутер, который понимает, как думает наниматель.
+Одновременно ты коуч, который помогает людям найти свою сильную позицию.
+
+ЗАДАЧА:
+Проанализируй мой профиль и дай конкретный план поиска работы / партнёрства.
+
+МОЙ ПРОФИЛЬ:
+- Имя: <span class="var">[ЗАПОЛНИ]</span>
+- Текущая роль: <span class="var">[ЗАПОЛНИ — например: backend-разработчик, продакт, дизайнер]</span>
+- Опыт (лет): <span class="var">[ЗАПОЛНИ]</span>
+- Hard skills: <span class="var">[ЗАПОЛНИ — языки, фреймворки, инструменты]</span>
+- Soft skills: <span class="var">[ЗАПОЛНИ — что умеешь кроме кода]</span>
+- Индустрии: <span class="var">[ЗАПОЛНИ — финтех, e-commerce, edtech и т.д.]</span>
+- Что ищу: <span class="var">[ЗАПОЛНИ — найм / фриланс / co-founder / партнёрство]</span>
+- Формат: <span class="var">[ЗАПОЛНИ — удалёнка / офис / гибрид]</span>
+- Зарплатные ожидания: <span class="var">[ЗАПОЛНИ или "рынок"]</span>
+- Чего НЕ хочу: <span class="var">[ЗАПОЛНИ — что точно не подходит]</span>
+
+ЧТО Я ХОЧУ ПОЛУЧИТЬ (дай ВСЁ по порядку):
+
+1. ЦЕЛЕВЫЕ РОЛИ (3-5 штук)
+   Для каждой роли:
+   - Название роли (русский + английский)
+   - Где искать (конкретные площадки, каналы, сайты)
+   - Средняя вилка зарплат / компенсации
+   - Мой fit (0-10) с объяснением
+   - Что нужно докачать до 10/10
+
+2. ПОРТРЕТ НАНИМАТЕЛЯ
+   - Кто эти люди (размер компании, стадия, индустрия)
+   - Что у них болит (какую проблему я решаю)
+   - Что они ценят больше всего
+   - Красные флаги — чего избегать
+
+3. СТРАТЕГИЯ ПОИСКА
+   - ТОП-5 площадок с приоритетами
+   - Поисковые запросы (копипаст для LinkedIn, hh.ru, Telegram)
+   - Сколько откликов в день для результата
+   - Timeline: когда ждать первые созвоны
+
+4. ШАБЛОН АУТРИЧА
+   - Холодное сообщение для каждой роли (3-4 предложения)
+   - Что менять под каждую вакансию
+
+5. QUICK WINS (5 действий на сегодня)
+   - Что сделать прямо сейчас, за 1 час, без подготовки
+
+Формат: структурированный, с заголовками, без воды.
+Если чего-то не хватает — спроси, прежде чем отвечать.</pre>
+            </div>
+        </section>
+
+        <!-- WHAT EMPLOYERS WANT -->
+        <section>
+            <div class="section-label">03 / Глазами нанимателя</div>
+            <h2>Что реально ценит рынок</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <h4>Ownership</h4>
+                    <p>"Я отвечаю за результат, а не за процесс." Наниматель ищет партнёра, а не исполнителя.</p>
+                    <span class="tag">soft skill #1</span>
+                </div>
+                <div class="card">
+                    <h4>Скорость</h4>
+                    <p>Быстрое принятие решений, быстрый MVP, быстрый результат. Стартапу нужно вчера.</p>
+                    <span class="tag">делает или говорит?</span>
+                </div>
+                <div class="card">
+                    <h4>Бизнес-мышление</h4>
+                    <p>Понимает unit-экономику, а не только код. Думает "зачем", а не только "как".</p>
+                    <span class="tag">отличает сеньора</span>
+                </div>
+                <div class="card">
+                    <h4>Толерантность к хаосу</h4>
+                    <p>Стартап = неопределённость. Если нужно ТЗ на 50 страниц — это не сюда.</p>
+                    <span class="tag">реальность стартапов</span>
+                </div>
+                <div class="card">
+                    <h4>Конкретные кейсы</h4>
+                    <p>Не "я знаю React", а "я построил X, которым пользуются Y человек, и это принесло Z".</p>
+                    <span class="tag">упаковка решает</span>
+                </div>
+                <div class="card">
+                    <h4>Ниша = премиум</h4>
+                    <p>Финтех, крипто, AI, healthtech — нишевый опыт оплачивается в 2-3x.</p>
+                    <span class="tag">не бойся специализации</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ARCHITECTURE -->
+        <section id="architecture">
+            <div class="section-label">04 / Для тех, кто хочет автоматизировать</div>
+            <h2>Архитектура агента</h2>
+            <p style="color:var(--text2);margin-bottom:32px;">Три агента в пайплайне. Каждый делает одну задачу хорошо.</p>
+
+            <div class="pipeline">
+                <div class="pipeline-step">
+                    <div class="step-num">AGENT 01</div>
+                    <h4>SCRAPER</h4>
+                    <p>Парсит Telegram, LinkedIn, vc.ru, hh.ru каждые 6 часов. Собирает сырые возможности в базу.</p>
+                </div>
+                <div class="pipeline-step">
+                    <div class="step-num">AGENT 02</div>
+                    <h4>MATCHER</h4>
+                    <p>LLM оценивает каждую возможность по 5 критериям. Порог: score >= 7 из 10.</p>
+                </div>
+                <div class="pipeline-step">
+                    <div class="step-num">AGENT 03</div>
+                    <h4>OUTREACH</h4>
+                    <p>Генерирует персонализированное сообщение. Отправляет в Telegram с кнопками.</p>
+                </div>
+            </div>
+
+            <h3 style="margin-top:40px;">Scoring: 5 критериев оценки</h3>
+            <div class="score-grid">
+                <div class="score-item">
+                    <div class="letter">R</div>
+                    <div class="name">Relevance</div>
+                    <div class="desc">Соответствие навыкам</div>
+                </div>
+                <div class="score-item">
+                    <div class="letter">U</div>
+                    <div class="name">Urgency</div>
+                    <div class="desc">Срочность найма</div>
+                </div>
+                <div class="score-item">
+                    <div class="letter">C</div>
+                    <div class="name">Compensation</div>
+                    <div class="desc">Деньги / equity</div>
+                </div>
+                <div class="score-item">
+                    <div class="letter">F</div>
+                    <div class="name">Culture Fit</div>
+                    <div class="desc">Стиль работы</div>
+                </div>
+                <div class="score-item">
+                    <div class="letter">G</div>
+                    <div class="name">Growth</div>
+                    <div class="desc">Потенциал роста</div>
+                </div>
+            </div>
+
+            <h3 style="margin-top:40px;">Промпт для агента-скоринга</h3>
+            <div class="prompt-block">
+                <button class="copy-btn" onclick="copyPrompt(this, 'scorer-text')">Копировать</button>
+                <pre id="scorer-text">Ты — карьерный скаут. Оцени возможность для кандидата.
+
+ПРОФИЛЬ КАНДИДАТА:
+{profile_yaml}
+
+ВОЗМОЖНОСТЬ:
+{opportunity_text}
+
+Оцени по шкале 0-10:
+1. RELEVANCE — Соответствие навыкам
+2. URGENCY — Срочность (выше = лучше шанс)
+3. COMPENSATION — Привлекательность компенсации
+4. CULTURE_FIT — Подходит ли стиль работы
+5. GROWTH — Потенциал роста
+
+RED_FLAGS: [список, если есть]
+TOTAL_SCORE: среднее 5 критериев
+VERDICT: "APPLY" (>= 7) | "MAYBE" (5-6) | "SKIP" (&lt; 5)
+
+Если VERDICT = "APPLY":
+DRAFT_MESSAGE: персонализированное сообщение (3-4 предложения).
+
+Ответ строго в JSON.</pre>
+            </div>
+
+            <h3 style="margin-top:40px;">Шаблон профиля (profile.yaml)</h3>
+            <div class="prompt-block">
+                <button class="copy-btn" onclick="copyPrompt(this, 'profile-text')">Копировать</button>
+                <pre id="profile-text">name: "Твоё имя"
+roles:
+  - "Целевая роль 1"
+  - "Целевая роль 2"
+
+hard_skills:
+  skill_1: expert       # expert / advanced / intermediate
+  skill_2: advanced
+
+soft_skills:
+  - "Описание soft skill 1"
+  - "Описание soft skill 2"
+
+preferences:
+  compensation:
+    - salary: preferred
+    - equity: acceptable
+  location: remote_first  # remote_first / office / hybrid
+  commitment: full-time   # full-time / part-time / freelance
+  industries:
+    preferred: [fintech, saas, edtech]
+    avoid: [gambling]
+
+deal_breakers:
+  - "Что точно не подходит"</pre>
+            </div>
+        </section>
+
+        <!-- SPRINT -->
+        <section id="sprint">
+            <div class="section-label">05 / Спринт-план</div>
+            <h2>От нуля до работающего агента</h2>
+            <div class="sprint-timeline">
+                <div class="sprint-item">
+                    <div class="sprint-num">Sprint 0</div>
+                    <div class="sprint-content">
+                        <h4>Foundation</h4><div class="dur">1 день</div>
+                        <ul><li>Репо, структура, profile.yaml, .env, Dockerfile</li></ul>
+                    </div>
+                </div>
+                <div class="sprint-item">
+                    <div class="sprint-num">Sprint 1</div>
+                    <div class="sprint-content">
+                        <h4>Scraper MVP</h4><div class="dur">2-3 дня</div>
+                        <ul><li>Telegram scraper (Telethon, 3-5 каналов)</li><li>Парсер vc.ru (requests + BS4)</li><li>SQLite + тесты</li></ul>
+                    </div>
+                </div>
+                <div class="sprint-item">
+                    <div class="sprint-num">Sprint 2</div>
+                    <div class="sprint-content">
+                        <h4>Matcher</h4><div class="dur">2 дня</div>
+                        <ul><li>Промпт скоринга + Claude API (Sonnet)</li><li>Pipeline: raw → scored, порог >= 7</li></ul>
+                    </div>
+                </div>
+                <div class="sprint-item">
+                    <div class="sprint-num">Sprint 3</div>
+                    <div class="sprint-content">
+                        <h4>Notifier Bot</h4><div class="dur">2 дня</div>
+                        <ul><li>Telegram-бот, inline-кнопки</li><li>Генерация драфта, трекинг реакций</li></ul>
+                    </div>
+                </div>
+                <div class="sprint-item">
+                    <div class="sprint-num">Sprint 4</div>
+                    <div class="sprint-content">
+                        <h4>Deploy</h4><div class="dur">1-2 дня</div>
+                        <ul><li>Docker-compose + cron (каждые 6ч)</li><li>Деплой на VPS / Railway</li></ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SOURCES -->
+        <section>
+            <div class="section-label">06 / Где искать</div>
+            <h2>Источники возможностей</h2>
+            <div class="source-grid">
+                <div class="source-card">
+                    <h4>Telegram</h4>
+                    <ul><li>@cofoundit</li><li>@founder_search</li><li>@startupoftheday</li><li>@vc_ru_startups</li></ul>
+                </div>
+                <div class="source-card">
+                    <h4>Россия</h4>
+                    <ul><li>vc.ru — "Ищу сооснователя"</li><li>Хабр Фриланс</li><li>hh.ru — стартап-вакансии</li><li>ФРИИ, Сколково</li></ul>
+                </div>
+                <div class="source-card">
+                    <h4>International</h4>
+                    <ul>
+                        <li><a href="https://ycombinator.com/cofounder-matching">YC Co-Founder Matching</a></li>
+                        <li><a href="https://wellfound.com">AngelList / Wellfound</a></li>
+                        <li><a href="https://indiehackers.com">Indie Hackers</a></li>
+                        <li><a href="https://toptal.com">Toptal</a></li>
+                    </ul>
+                </div>
+                <div class="source-card">
+                    <h4>LinkedIn-запросы</h4>
+                    <ul>
+                        <li>"looking for" "technical co-founder"</li>
+                        <li>"ищу" "технического сооснователя"</li>
+                        <li>"fractional CTO" "early stage"</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- TOOLS -->
+        <section id="tools">
+            <div class="section-label">07 / Инструменты</div>
+            <h2>Что стоит изучить до понедельника</h2>
+            <div class="tools-grid">
+                <div class="tool-card">
+                    <h4>Claude (claude.ai)</h4>
+                    <p>LLM от Anthropic. Лучший для структурированного анализа и длинных промптов.</p>
+                    <div class="free">Бесплатный tier</div>
+                </div>
+                <div class="tool-card">
+                    <h4>ChatGPT (chatgpt.com)</h4>
+                    <p>LLM от OpenAI. Хорош для креативных текстов и брейнштормов.</p>
+                    <div class="free">Бесплатный tier</div>
+                </div>
+                <div class="tool-card">
+                    <h4>Claude Code</h4>
+                    <p>CLI-агент, который пишет код, деплоит, управляет проектами. Для продвинутых.</p>
+                    <div class="free">Нужна подписка Pro/Max</div>
+                </div>
+                <div class="tool-card">
+                    <h4>Cursor / Windsurf</h4>
+                    <p>AI-IDE. Пишет код с пониманием контекста всего проекта.</p>
+                    <div class="free">Бесплатный tier</div>
+                </div>
+                <div class="tool-card">
+                    <h4>n8n</h4>
+                    <p>No-code автоматизация. Если не хочешь писать код — собери агента визуально.</p>
+                    <div class="free">Self-hosted бесплатно</div>
+                </div>
+                <div class="tool-card">
+                    <h4>GitHub Codex</h4>
+                    <p>Автономный агент от GitHub. Даёшь задачу — получаешь PR с кодом.</p>
+                    <div class="free">GitHub Pro</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- QUICK START -->
+        <section id="start">
+            <div class="section-label">08 / Начни сейчас</div>
+            <h2>5 действий на сегодня</h2>
+            <div class="qs-steps">
+                <div class="qs-step">
+                    <div><p>Скопируй промпт выше и вставь в Claude / ChatGPT</p>
+                    <div class="sub">Заполни свой профиль — получишь персональный план за 2 минуты</div></div>
+                </div>
+                <div class="qs-step">
+                    <div><p>Обнови заголовок в LinkedIn</p>
+                    <div class="sub">Используй формулу: [Роль] | [Ниша] | [Суперсила]. Например: "Product Manager | EdTech | Growth from 0 to 1"</div></div>
+                </div>
+                <div class="qs-step">
+                    <div><p>Подпишись на Telegram-каналы из списка выше</p>
+                    <div class="sub">@cofoundit, @founder_search — мониторь каждый день</div></div>
+                </div>
+                <div class="qs-step">
+                    <div><p>Отправь 5 холодных сообщений</p>
+                    <div class="sub">LLM сгенерирует шаблон. Персонализируй под каждого. Конверсия ~20-30%</div></div>
+                </div>
+                <div class="qs-step">
+                    <div><p>Попробуй любой AI-инструмент из списка</p>
+                    <div class="sub">Хотя бы один. В понедельник на лекции будем разбирать подробнее</div></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ -->
+        <section>
+            <div class="section-label">09 / FAQ</div>
+            <h2>Частые вопросы</h2>
+            <div class="faq-item">
+                <div class="faq-q">Я не программист. Мне это подходит?</div>
+                <div class="faq-a">Да. Промпт работает для любой роли: продакт, дизайнер, маркетолог, аналитик. Просто заполни свой профиль. Код не нужен.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-q">Какой LLM лучше?</div>
+                <div class="faq-a">Claude — для структурированного анализа (карьерный план). ChatGPT — для креативных текстов (посты, письма). Оба бесплатны на базовом уровне.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-q">Я хочу собрать агента, но не умею кодить</div>
+                <div class="faq-a">Используй n8n (визуальная автоматизация) или попроси Claude Code / Cursor написать код за тебя. Или приходи на лекцию в понедельник — разберём.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-q">Зачем мне агент, если есть промпт?</div>
+                <div class="faq-a">Промпт — это разовый анализ. Агент — это автоматизация: он сканирует новые вакансии каждые 6 часов и присылает лучшие тебе в Telegram. Ты не пропустишь ни одной возможности.</div>
+            </div>
+        </section>
+
+        <footer>
+            <p>СБОРКА — карьерный клуб &mdash; <a href="https://github.com/TimmyZinin/sborka-career-agent">GitHub</a></p>
+            <p style="margin-top:8px;">2026 / Built with AI</p>
+        </footer>
+    </div>
+
+    <script>
+    function copyPrompt(btn, id) {
+        const el = document.getElementById(id);
+        const text = el.innerText;
+        navigator.clipboard.writeText(text).then(() => {
+            btn.textContent = 'Скопировано!';
+            btn.classList.add('copied');
+            setTimeout(() => {
+                btn.textContent = 'Копировать';
+                btn.classList.remove('copied');
+            }, 2000);
+        });
+    }
+    </script>
+</body>
+</html>
